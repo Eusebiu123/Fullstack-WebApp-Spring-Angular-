@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path="api/v1")
 @RestController
 public class UsersController {
@@ -24,8 +24,22 @@ public class UsersController {
         return usersService.listAll();
     }
     @PostMapping("/register")
-    public String saveUser(@RequestBody UsersModel usersModel)
+    public int saveUser(@RequestBody UsersModel usersModel)
     {
-        return (usersService.save(usersModel));
+        if((usersService.save(usersModel))==0){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+    @PostMapping("/login")
+    public int loginUser(@RequestBody UsersModel usersModel)
+    {
+        if(usersService.authenticate(usersModel.getEmail(),usersModel.getPassword())==null)
+        {
+            return 0;
+        }else {
+            return (usersService.authenticate(usersModel.getEmail(), usersModel.getPassword())).getId();
+        }
     }
 }

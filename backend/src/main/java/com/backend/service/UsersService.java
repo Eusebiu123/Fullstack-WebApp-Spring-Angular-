@@ -21,13 +21,13 @@ public class UsersService {
         this.passwordEncoder =  new BCryptPasswordEncoder();
     }
 
-    public String registerUser(String firstName,String lastName,String email,String password){
+    public int registerUser(String firstName,String lastName,String email,String password){
         if(email==null && password==null) {
-            return "null";
+            return 0;
         }else{
             if(usersRepository.findFirstByEmail(email).isPresent()){
                 System.out.println("Duplicate login");
-                return null;
+                return 0;
             }
             String passwordEncoded = this.passwordEncoder.encode(password);
             UsersModel usersModel = new UsersModel();
@@ -38,7 +38,7 @@ public class UsersService {
 
             // Aici il adaugam in baza de date
             usersRepository.save(usersModel);
-            return "adaugat!";
+            return 1;
         }
     }
 
@@ -47,6 +47,7 @@ public class UsersService {
         UsersModel usersModel = usersRepository.findByEmail(email);
         String passEncoded = usersModel.getPassword();
         if(bCryptPasswordEncoder.matches(password,passEncoded)) {
+//            System.out.println(usersRepository.findByEmailAndPassword(email, passEncoded).orElse(null));
             return usersRepository.findByEmailAndPassword(email, passEncoded).orElse(null);
         }
         else return null;
@@ -56,12 +57,11 @@ public class UsersService {
         return this.usersRepository.findAll();
     }
 
-    public String save(UsersModel usersModel) {
+    public int save(UsersModel usersModel) {
         String firstName=usersModel.getFirstName();
         String lastName=usersModel.getLastName();
         String email=usersModel.getEmail();
         String password=usersModel.getPassword();
-        String response= registerUser(firstName,lastName,email,password);
-        return response;
+        return (registerUser(firstName,lastName,email,password));
     }
 }
