@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit{
       this.ver=res;
       if(this.ver){
         console.log("Excelent");
-        this._router.navigate(['/loginsuccess']);
+        this._router.navigate(['/home']);
       }else{
         console.log("Este o eroare undeva!");
         this.msg = 'Bad credentials, please enter valid email and password!';
